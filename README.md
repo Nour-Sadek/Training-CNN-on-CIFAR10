@@ -257,3 +257,31 @@ this high dimensional feature space.
 
 # Results
 
+
+# Discussion and Next Steps
+
+
+# Repository Structure
+
+This repository contains:
+
+    main.py: Implementation of a deep learning model from scratch where loss and accuracy of the train and validation sets 
+    during training are plotted as well as performing Dimensionality Reduction Analysis by plotting a t-SNE plot.
+
+    modified_models.py: Eight other models that were modified from the original one presented in main.py that were also 
+    trained on the CIFAR-10 dataset to see if they had better performance.
+
+    hyperparameter_tune.py: Performing hyperparameter tuning using pytorch-Lightning and Optuna to optimize the original 
+    model in main.py, with the model with the optimal hyperparameters presented as CIFAR10Net_optim in modified_models.py.
+
+    transfer_learning.py: Performing Transfer Learning using the pre-trained ResNet18 model. 
+        
+    functions.py: Four helper functions that are used across the python scripts.
+
+    requirements.txt: List of required Python packages.
+
+    CIFAR_7.pth: The saved model after it has been trained on the CIFAR-10 dataset for 100 epochs which used the values 
+    of the optimal hyperparameters as obtained after one run of hyperparameter_tune.py, where dimensionality reduction 
+    analysis was performed on it.
+
+Python 3.12 version was used
