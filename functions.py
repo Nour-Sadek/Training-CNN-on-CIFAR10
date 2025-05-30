@@ -6,8 +6,7 @@ from torch.utils.data import DataLoader
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-# Find the per channel mean and standard deviation of a given data set that was
-# fed to a data loader
+# Find the per channel mean and standard deviation of a given data set that was fed to a data loader
 def mean_std_per_channel(data_loader: DataLoader) -> tuple[torch.tensor, torch.tensor]:
     mean = 0
     std = 0
@@ -16,16 +15,13 @@ def mean_std_per_channel(data_loader: DataLoader) -> tuple[torch.tensor, torch.t
         images = images.view(images_batch_size, images.size(1), -1)
         mean = mean + images.mean(2).sum(0)  # sum over the batches (dim 0) so it is per channel
         std = std + images.std(2).sum(0)
-
     mean = mean / len(data_loader.dataset)
     std = std / len(data_loader.dataset)
     return mean, std
 
 
-# Generate the appropriate transform depending on data set,
-# as well as its mean and std
-def apply_transforms(dataset, mean_std_tuple: tuple[torch.tensor, torch.tensor],
-                     train: bool) -> transforms:
+# Generate the appropriate transform depending on data set, as well as its mean and std
+def apply_transforms(mean_std_tuple: tuple[torch.tensor, torch.tensor], train: bool) -> transforms:
     if train:
         return transforms.Compose([
             transforms.RandomHorizontalFlip(),

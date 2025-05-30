@@ -17,6 +17,8 @@ from functions import apply_transforms
 from functions import initialize_using_norm_kaiming
 from functions import get_accuracy
 
+from modified_models import CIFAR10Net_7
+
 """
 Working on CIFAR10 dataset that is made up of images of 32x32 pixels in size
 train set size = 45000
@@ -65,9 +67,9 @@ test_mean_std = mean_std_per_channel(test_loader)
 
 # Transform the datasets again with normalization,
 # as well as On-the-fly/Online augmentation
-trainset.dataset.transform = apply_transforms(trainset, train_mean_std, train=True)
-valset.dataset.transform = apply_transforms(valset, val_mean_std, train=False)
-testset.transform = apply_transforms(testset, test_mean_std, train=False)
+trainset.dataset.transform = apply_transforms(train_mean_std, train=True)
+valset.dataset.transform = apply_transforms(val_mean_std, train=False)
+testset.transform = apply_transforms(test_mean_std, train=False)
 
 # Load the datat sets again
 train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
@@ -235,18 +237,19 @@ torch.save(model.state_dict(), path)
 
 """Dimensionality-Reduction Analysis"""
 
-from modified_models import CIFAR10Net_7
-
 # Load the 7th model that didn't overfit the training data set as much as the first version of the model
 loaded_model = CIFAR10Net_7()
+loaded_model = loaded_model.to(device)
 loaded_model.load_state_dict(torch.load("CIFAR_7.pth", weights_only=True))
 
 # Get the features of the second to last fully-connected layer
+loaded_model.eval()
 features = []
 predictions = []
 true_labels = []
 with torch.no_grad():
     for inputs, labels in test_loader:
+        inputs, labels = inputs.to(device), labels.to(device)
         outputs, fc2_features = loaded_model(inputs, return_features=True)
         _, predicted = torch.max(outputs, 1)
         features.append(fc2_features)
@@ -261,14 +264,14 @@ is_correct = true_labels == predictions
 
 # Draw the t-SNE plot
 tsne = TSNE(n_components=2, random_state=42)
-features_2d = tsne.fit_transform(features.numpy())
+features_2d = tsne.fit_transform(features.cpu().numpy())
 
 tsne_df = pd.DataFrame({
     "x": features_2d[:, 0],
     "y": features_2d[:, 1],
-    "predictions": predictions.numpy(),
-    "label": true_labels.numpy(),
-    "correct": is_correct.numpy()
+    "predictions": predictions.cpu().numpy(),
+    "label": true_labels.cpu().numpy(),
+    "correct": is_correct.cpu().numpy()
 })
 
 # Define a map linking numeric labels to class names
