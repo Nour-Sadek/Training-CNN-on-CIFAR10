@@ -371,6 +371,7 @@ the output of the second to last fully connected layer of the images of the test
 reduction technique was used. I used CIFAR10Net_7 after training it for 100 epochs. The colors correspond to the class 
 that the model predicted each test/train image belongs to, and the points corresponding to those images that the model 
 predicted its classification incorrectly have a black border around them.
+
 This is the t-SNE plot on the test set:
 ![Image](https://github.com/user-attachments/assets/cebdb58c-2c3a-4c93-8abe-89ff3932c913)
 This is the t-SNE plot on the train set:
@@ -397,6 +398,38 @@ classes confidently.
 
 # Discussion and Next Steps
 
+After learning the basics about Convolutional Neural Networks, I sought to practice what I have learnt by implementing a 
+deep learning model for the task of image classification on one of the available practice datasets, CIFAR-10 using one of 
+the most widely used deep learning frameworks, PyTorch.
+
+I wanted to practice building a model from scratch, so I started with a simple model made up of 2 Convolutional layers and 
+3 Fully Connected layers and applied directed changes to it to see whether those changes will alter the training process in 
+the way that I predicted they would.
+
+Implementing multiple models showed how important it is to have appropriate values for the hyperparameters as the wrong ones 
+can hinder and impede the learning process. So I applied hyperparameter tuning on afew parameters and indeed it did have 
+a positive impact on the training. However, I only ran the tuner once where it selected the optimal hyperparameter values 
+based on 30 trials and only on a select few, so next steps would be to run it more times, as well as on other 
+hyperparameters, like the number of kernels and their size of the convolutional layers, beta1 and beta2 for the Adam optimizer, 
+using a different type of optimizer, etc. Also, the learning rate for the models that had a deeper Convolutional Network 
+could be fine-tuned to see if that enhances training.
+
+I also wanted to practice implementing transfer learning as that is a very common strategy in practice, so I loaded the 
+pre-trained ResNet18 model and used its Convolutional Network as a feature extractor and only optimized the parameters of the 
+last fully connected layer so that it connects to 10 class nodes instead of 1000. This model gave the highest validation accuracy 
+of 80%. However, I only used one learning rate value of 0.01 so next steps would be to search the hyperparameter space and 
+look for the best learning rate that would give the lowest validation loss and test strategies like decreasing the learning 
+rate if the validation accuracy plateaus for a certain number of epochs. I also only used ResNet's ConvNet as a feature extractor 
+since I made the assumption that ImageNet's and CIFAR-10's images are similar, however one next step would be to try and 
+fine-tune some of the higher-level (later) layers of the Convolutional Network instead of just using the ConvNet as is and 
+see if that leads to better results. Also, other pre-trained deep learning models like VGG16 and Inception nets could be used 
+to see if they lead to better training.
+
+Also, considering that over-fitting was a consistent issue throughout the different models, next steps would be to try and 
+change the regularization strategies. For example, try and implement different types of data augmentation on the training 
+data set, try L1 or elastic regularization instead of L2. In addition, other strategies could be used like stochastic depth 
+or implementing batch normalization with the learnable gamma and beta parameters to allow for the identity mapping to be 
+possibly preserved.
 
 # Repository Structure
 
